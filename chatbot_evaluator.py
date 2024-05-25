@@ -15,15 +15,17 @@ class MistralJudge:
         metrics_schema (dict): The JSON schema for the evaluation metrics.
     """
 
-    def __init__(self, metrics_text=METRICS_TEXT):
+    def __init__(self, project_description, metrics_text=METRICS_TEXT):
         """
         Initialize the ChatbotEvaluator with the specified metrics text.
 
         Args:
+            project_description (str): A brief description of the evaluated LLM Based application
             metrics_text (str): The text defining the evaluation metrics.
         """
         self.metrics_text = metrics_text
         self.metrics_schema = self.create_metrics_schema(metrics_text)
+        self.project_description = project_description
 
     def create_metrics_schema(self, metrics_text):
         """
@@ -57,6 +59,7 @@ class MistralJudge:
         """
         return f"""
         You are a quality assurance specialist evaluating AI assistants. 
+        You are evaluation an AI-assistant with the following description provided by its developers: "{self.project_description}"
         Your goal is to assess the user's level of satisfaction with the chat based on the following metrics:
         {self.metrics_text}. For each criterion among these criteria {self.metrics_text} please provide the score between 0 and 5 where 5 is the best score. 
         Here is the chat:
@@ -79,6 +82,7 @@ class MistralJudge:
         for i in range(1, 4):
             chat = combined_dialogues.iloc[i, 1]
             prompt = self.generate_prompt(chat)
+            print(prompt)
             response = {'Dialogue': chat}
             response.update(eval(mistral(prompt, model='mistral-large-latest', is_json=True)))
             results.append(response)

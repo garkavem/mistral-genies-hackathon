@@ -16,7 +16,7 @@ def main():
 
     st.markdown("# Genies - LLM Quality Analysis ")
     st.markdown("### 📝 Project Description:")
-    project_description = st.text_input(" Please provide a brief description of your LLm Based application:")
+    project_description = st.text_input(" Please provide a brief description of your LLM Based application:")
 
     # Toggle for user's dialogs
     on = st.toggle("📂 I have my own tests")
@@ -27,11 +27,8 @@ def main():
             # Read the CSV file into a DataFrame
             combined_dialogues = pd.read_csv(uploaded_file, index_col=0)
 
-            # Assuming metrics_text is defined somewhere
-            metrics_text = "Some metrics text or configuration"  # Update this as per your requirement
-
             # Evaluate the chatbot
-            mistral_judge = MistralJudge()
+            mistral_judge = MistralJudge(project_description)
             results = mistral_judge.evaluate(combined_dialogues)
 
             # Display the results in Streamlit
