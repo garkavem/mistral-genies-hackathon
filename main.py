@@ -3,7 +3,7 @@ import pandas as pd
 from evaluator import MistralEvaluator
 from chatbot_evaluator import *
 import altair as alt
-
+import os
 
 def main():
     st.set_page_config(
@@ -11,6 +11,7 @@ def main():
         page_icon="💡",
         layout="wide",
         initial_sidebar_state="expanded")
+    os.environ['MISTRAL_API_KEY'] = st.sidebar.text_input('Mistral API Key', type='password')
     alt.themes.enable("dark")
 
     st.markdown("# Genies - LLM Quality Analysis ")
