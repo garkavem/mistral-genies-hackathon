@@ -34,7 +34,7 @@ def main():
             # Display the results in Streamlit
             st.markdown("### Evaluation Results")
             col = st.columns((4.5, 4.5), gap='medium')
-            example_idx = 2
+            example_idx = -1
             with col[0]:
                 st.markdown('#### Example')
                 example = '###**Dialogue**###\n\n' + results.iloc[example_idx]['Dialogue'].replace(

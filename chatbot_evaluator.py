@@ -79,10 +79,9 @@ class MistralJudge:
             pd.DataFrame: The DataFrame containing the evaluation results.
         """
         results = []
-        for i in range(1, 4):
+        for i in range(len(combined_dialogues)):
             chat = combined_dialogues.iloc[i, 1]
             prompt = self.generate_prompt(chat)
-            print(prompt)
             response = {'Dialogue': chat}
             response.update(eval(mistral(prompt, model='mistral-large-latest', is_json=True)))
             results.append(response)
