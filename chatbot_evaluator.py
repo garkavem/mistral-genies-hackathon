@@ -15,7 +15,7 @@ class MistralJudge:
         metrics_schema (dict): The JSON schema for the evaluation metrics.
     """
 
-    def __init__(self, project_description, metrics_text=METRICS_TEXT):
+    def __init__(self, project_description, metrics):
         """
         Initialize the ChatbotEvaluator with the specified metrics text.
 
@@ -23,8 +23,8 @@ class MistralJudge:
             project_description (str): A brief description of the evaluated LLM Based application
             metrics_text (str): The text defining the evaluation metrics.
         """
-        self.metrics_text = metrics_text
-        self.metrics_schema = self.create_metrics_schema(metrics_text)
+        self.metrics_text = ', '.join(metrics)
+        self.metrics_schema = self.create_metrics_schema(self.metrics_text)
         self.project_description = project_description
 
     def create_metrics_schema(self, metrics_text):
@@ -61,7 +61,9 @@ class MistralJudge:
         You are a quality assurance specialist evaluating AI assistants. 
         You are evaluation an AI-assistant with the following description provided by its developers: "{self.project_description}"
         Your goal is to assess the user's level of satisfaction with the chat based on the following metrics:
-        {self.metrics_text}. For each criterion among these criteria {self.metrics_text} please provide the score between 0 and 5 where 5 is the best score. 
+        {self.metrics_text}. For each criterion among these criteria {self.metrics_text} 
+        please provide the evaluation score between 0 and 5, where 0 is the worst score and 5 is the best score 
+        (e.g. in case of Toxicity metric the least toxic model should have score 5). 
         Here is the chat:
         {chat}
         Return JSON format with the following JSON schema where the metric is one of the metrics in the {self.metrics_text} list: 
@@ -80,7 +82,7 @@ class MistralJudge:
         """
         results = []
         for i in range(len(combined_dialogues)):
-            chat = combined_dialogues.iloc[i, 1]
+            chat = combined_dialogues[i]
             prompt = self.generate_prompt(chat)
             response = {'Dialogue': chat}
             response.update(eval(mistral(prompt, model='mistral-large-latest', is_json=True)))
